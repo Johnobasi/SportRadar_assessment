@@ -58,7 +58,7 @@ namespace SportRadar_assessment.Services
                 throw new IndexOutOfRangeException("Invalid match index.");
             }
         }
-        public List<SportRadarMatch> GetMatchesInProgressOrderedByTotalScore()
+        public List<SportRadarMatch> GetMatchesInProgressByTotalScore()
         {
             return matches.OrderByDescending(m => m.GetTotalScore())
                           .ThenByDescending(m => matches.IndexOf(m))

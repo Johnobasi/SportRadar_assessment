@@ -26,7 +26,7 @@ public class Program
         // Finish match (index 2) between Germany and France
         scoreboard.FinishMatch(2);
 
-        List<SportRadarMatch> matchesInProgress = scoreboard.GetMatchesInProgressOrderedByTotalScore();
+        List<SportRadarMatch> matchesInProgress = scoreboard.GetMatchesInProgressByTotalScore();
 
         Console.WriteLine("Summary of matches in progress ordered by total score:");
         int position = 1;
