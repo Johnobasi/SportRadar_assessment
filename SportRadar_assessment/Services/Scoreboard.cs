@@ -1,41 +1,54 @@
 ﻿using SportRadar_assessment.Contracts;
+using SportRadar_assessment.Models;
 
 namespace SportRadar_assessment.Services
 {
     public class Scoreboard : IScoreboard
     {
-        private List<(string, string, int, int)> matches;
+        private List<SportRadarMatch> matches;
         public Scoreboard()
         {
-                matches = new List<(string, string, int, int)> ();
+            matches = new List<SportRadarMatch>();
         }
         public void FinishMatch(string homeTeam, string awayTeam)
         {
-            matches.RemoveAll(m => m.Item1 == homeTeam && m.Item2 == awayTeam);
+            matches.RemoveAll(m => m.HomeTeam == homeTeam && m.AwayTeam == awayTeam);
+        }
+
+        public List<SportRadarMatch> GetMatchesInProgressOrderedByTotalScore()
+        {
+            return matches.OrderByDescending(m => m.GetTotalScore())
+                      .ThenByDescending(m => matches.IndexOf(m))
+                      .ToList();
         }
 
         public List<string> GetSummary()
         {
             // Order by total score (descending) and then by the most recently started match (descending)
-            var summary = matches.OrderByDescending(m => m.Item3 + m.Item4)
+            var summary = matches.OrderByDescending(m => m.AwayTeam + m.HomeTeam)
                                 .ThenByDescending(m => matches.IndexOf(m))
-                                .Select(m => $"{m.Item1} {m.Item3} - {m.Item2} {m.Item4}")
+                                .Select(m => $"{m.HomeTeam} {m.AwayTeamScore} - {m.AwayTeam} {m.HomeTeamScore}")
                                 .ToList();
             return summary;
         }
 
         public void StartMatch(string homeTeam, string awayTeam)
         {
-            matches.Add((homeTeam, awayTeam, 0, 0));
+            SportRadarMatch match = new SportRadarMatch(homeTeam, awayTeam);
+            matches.Add(match);
         }
 
         public void UpdateScore(string homeTeam, string awayTeam, int homeScore, int awayScore)
         {
-            var match = matches.FirstOrDefault(m => m.Item1 == homeTeam && m.Item2 == awayTeam);
-            if (match != default)
+            SportRadarMatch match = matches.Find(m => m.HomeTeam == homeTeam && m.AwayTeam == awayTeam);
+            if (match != null)
             {
-                matches.Remove(match);
-                matches.Add((homeTeam, awayTeam, homeScore, awayScore));
+                match.UpdateScore(homeScore, awayScore);
+            }
+            else
+            {
+                // Handle match not found
+                Console.WriteLine("Match not found!");
             }
         }
     }
