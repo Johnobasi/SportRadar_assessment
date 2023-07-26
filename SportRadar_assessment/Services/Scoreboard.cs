@@ -13,16 +13,16 @@ namespace SportRadar_assessment.Services
 
         public void StartMatch(string homeTeam, string awayTeam)
         {
-            SportRadarMatch match = new SportRadarMatch(homeTeam, awayTeam);
-            matches.Add(match);
+            SportRadarMatch newMatch = new SportRadarMatch(homeTeam, awayTeam);
+            matches.Add(newMatch);
         }
 
         public void UpdateScore(string homeTeam, string awayTeam, int homeTeamScore, int awayTeamScore)
         {
-            SportRadarMatch match = matches.Find(m => m.HomeTeam == homeTeam && m.AwayTeam == awayTeam);
-            if (match != null)
+            SportRadarMatch updateMatch = matches.Find(m => m.HomeTeam == homeTeam && m.AwayTeam == awayTeam);
+            if (updateMatch != null)
             {
-                match.UpdateScore(homeTeamScore, awayTeamScore);
+                updateMatch.UpdateScore(homeTeamScore, awayTeamScore);
             }
             else
             {
@@ -31,11 +31,33 @@ namespace SportRadar_assessment.Services
             }
         }
 
-        public void FinishMatch(string homeTeam, string awayTeam)
+
+        public void UpdateMatchScore(int matchIndex, int homeTeamScore, int awayTeamScore)
         {
-            matches.RemoveAll(m => m.HomeTeam == homeTeam && m.AwayTeam == awayTeam);
+            if (matchIndex >= 0 && matchIndex < matches.Count)
+            {
+                SportRadarMatch match = matches[matchIndex];
+                match.UpdateScore(homeTeamScore, awayTeamScore);
+            }
+            else
+            {
+                throw new IndexOutOfRangeException("Invalid match index.");
+            }
         }
 
+        public void FinishMatch(int matchIndex)
+        {
+            if (matchIndex >= 0 && matchIndex < matches.Count)
+            {
+                SportRadarMatch match = matches[matchIndex];
+                match.FinishMatch();
+                matches.RemoveAt(matchIndex);
+            }
+            else
+            {
+                throw new IndexOutOfRangeException("Invalid match index.");
+            }
+        }
         public List<SportRadarMatch> GetMatchesInProgressOrderedByTotalScore()
         {
             return matches.OrderByDescending(m => m.GetTotalScore())

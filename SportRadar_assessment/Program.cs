@@ -9,19 +9,22 @@ public class Program
         Scoreboard scoreboard = new Scoreboard();
 
         scoreboard.StartMatch("Mexico", "Canada");
-        scoreboard.UpdateScore("Mexico", "Canada", 0, 5);
+        scoreboard.UpdateMatchScore(0, 0, 5);
 
         scoreboard.StartMatch("Spain", "Brazil");
-        scoreboard.UpdateScore("Spain", "Brazil", 10, 2);
+        scoreboard.UpdateMatchScore(1, 10, 2);
 
         scoreboard.StartMatch("Germany", "France");
-        scoreboard.UpdateScore("Germany", "France", 2, 2);
+        scoreboard.UpdateMatchScore(2, 2, 2);
 
         scoreboard.StartMatch("Uruguay", "Italy");
-        scoreboard.UpdateScore("Uruguay", "Italy", 6, 6);
+        scoreboard.UpdateMatchScore(3, 6, 6);
 
         scoreboard.StartMatch("Argentina", "Australia");
-        scoreboard.UpdateScore("Argentina", "Australia", 3, 1);
+        scoreboard.UpdateMatchScore(4, 3, 1);
+
+        // Finish match (index 2) between Germany and France
+        scoreboard.FinishMatch(2);
 
         List<SportRadarMatch> matchesInProgress = scoreboard.GetMatchesInProgressOrderedByTotalScore();
 
